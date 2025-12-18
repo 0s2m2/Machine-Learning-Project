@@ -3,8 +3,15 @@ import os
 import cv2
 import numpy as np
 import joblib
+from collections import Counter
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+
+test_images_path = os.path.join(PROJECT_ROOT, 'test_images')
+bestModel_path = os.path.join(PROJECT_ROOT, 'models', 'svm_pipeline.pkl')
 
 def predict(dataFilePath, bestModelPath):
     """
@@ -92,5 +99,12 @@ def predict(dataFilePath, bestModelPath):
             final_preds.append("Unknown")
         else:
             final_preds.append(le.inverse_transform([p])[0])
+    # final_preds is your list of predicted class names
+    class_counts = Counter(final_preds)
+
+    # Print results
+    for class_name, count in class_counts.items():
+        print(f"{class_name}: {count}")
     
     return final_preds
+
