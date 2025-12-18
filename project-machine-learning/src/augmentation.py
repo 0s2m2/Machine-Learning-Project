@@ -12,12 +12,12 @@ base_output = os.path.join(PROJECT_ROOT, 'dataset_split', 'train_aug')
 
 augmentation_pipeline = iaa.Sequential([
     iaa.Affine(
-        rotate=(-15, 15),   # small rotations
-        scale=(0.9, 1.1)    # slight zoom in/out
+        rotate=(-15, 15),   
+        scale=(0.9, 1.1)    
     ),
-    iaa.Fliplr(0.5),        # 50% chance horizontal flip
-    iaa.Multiply((0.8, 1.2)),  # brightness
-    iaa.LinearContrast((0.8, 1.2))  # contrast
+    iaa.Fliplr(0.5),        
+    iaa.Multiply((0.8, 1.2)),  
+    iaa.LinearContrast((0.8, 1.2))  
 ])
 
 def augment_class(class_name, input_dir, output_dir, target_count):

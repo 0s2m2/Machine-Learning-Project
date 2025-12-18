@@ -6,17 +6,17 @@ import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
-# --------------------------------------------------
+
 # PATHS
-# --------------------------------------------------
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(BASE_DIR)
 
 PIPELINE_PATH = os.path.join(PROJECT_ROOT, "models", "svm_pipeline.pkl")
 
-# --------------------------------------------------
+
 # LOAD TRAINED PIPELINE
-# --------------------------------------------------
+
 pipeline = joblib.load(PIPELINE_PATH)
 
 svm = pipeline["model"]
@@ -34,9 +34,9 @@ cnn = MobileNetV2(
 
 print("MobileNetV2 loaded successfully")
 
-# --------------------------------------------------
+
 # CLASS LABELS (MATCH TRAINING FOLDERS)
-# --------------------------------------------------
+
 CLASS_NAMES = [
     "cardboard",
     "glass",
@@ -49,9 +49,9 @@ CLASS_NAMES = [
 
 UNKNOWN_CLASS_ID = 6
 
-# --------------------------------------------------
+
 # IMAGE PREPROCESSING
-# --------------------------------------------------
+
 def preprocess_frame(frame):
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame = cv2.resize(frame, (224, 224))
@@ -59,17 +59,17 @@ def preprocess_frame(frame):
     frame = preprocess_input(frame)
     return frame
 
-# --------------------------------------------------
+
 # FEATURE EXTRACTION
-# --------------------------------------------------
+
 def extract_features(frame):
     frame = np.expand_dims(frame, axis=0)  # (1,224,224,3)
     features = cnn.predict(frame, verbose=0)
     return features.flatten().reshape(1, -1)
 
-# --------------------------------------------------
+
 # PREDICTION WITH REJECTION
-# --------------------------------------------------
+
 def predict(frame):
     processed = preprocess_frame(frame)
     features = extract_features(processed)
@@ -86,9 +86,9 @@ def predict(frame):
 
     return CLASS_NAMES[int(pred)], max_prob
 
-# --------------------------------------------------
+
 # LIVE CAMERA LOOP
-# --------------------------------------------------
+
 cap = cv2.VideoCapture(0)
 
 if not cap.isOpened():

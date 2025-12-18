@@ -7,9 +7,7 @@ import tensorflow as tf
 from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
-# --------------------------------------------------
 # PATHS
-# --------------------------------------------------
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(BASE_DIR)
 
@@ -17,9 +15,8 @@ DATA_DIR = os.path.join(PROJECT_ROOT, "dataset_split", "train_aug")
 DATA_DIR_VAL = os.path.join(PROJECT_ROOT, "dataset_split", "val")
 FEATURES_DIR = os.path.join(PROJECT_ROOT, "features")
 
-# --------------------------------------------------
 # LOAD CNN (FEATURE EXTRACTOR)
-# --------------------------------------------------
+
 model = MobileNetV2(
     weights="imagenet",
     include_top=False,
@@ -29,9 +26,8 @@ model = MobileNetV2(
 
 print("MobileNetV2 loaded successfully")
 
-# --------------------------------------------------
 # IMAGE PREPROCESSING
-# --------------------------------------------------
+
 def load_and_preprocess_image(img_path):
     img = cv2.imread(img_path)
     if img is None:
@@ -44,9 +40,9 @@ def load_and_preprocess_image(img_path):
     img = preprocess_input(img)
     return img
 
-# --------------------------------------------------
+
 # FEATURE EXTRACTION
-# --------------------------------------------------
+
 def extract_cnn_features(base_folder):
     features = []
     labels = []
@@ -65,22 +61,22 @@ def extract_cnn_features(base_folder):
             if img is None:
                 continue
 
-            img = np.expand_dims(img, axis=0)  # (1,224,224,3)
+            img = np.expand_dims(img, axis=0) 
 
             feature = model.predict(img, verbose=0)
-            feature = feature.flatten()  # (1280,)
+            feature = feature.flatten() 
 
             features.append(feature)
             labels.append(cls)
 
     return np.array(features), np.array(labels)
 
-# --------------------------------------------------
+
 # RUN
-# --------------------------------------------------
+
 if __name__ == "__main__":
     X_train, y_train = extract_cnn_features(DATA_DIR)
-    # Use the separate validation folder for validation features
+   
     X_val, y_val = extract_cnn_features(DATA_DIR_VAL)
 
     joblib.dump(X_train, os.path.join(FEATURES_DIR, "cnn_features_train.pkl"))
